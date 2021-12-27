@@ -1,0 +1,26 @@
+syntax = "proto3";
+package pb;
+
+option go_package = ".;proto";
+
+service MovieSearch {
+    rpc SearchMovie (SearchRequest) returns (SearchResponse);
+}
+
+message SearchRequest {
+    string movieName = 1;
+    int32 page = 2;
+}
+
+message SearchResponse {
+    repeated Movie movieList = 1;
+    string err = 2;
+}
+
+message Movie {
+    string title = 1;
+    string year = 2;
+    string type = 3;
+    string imdbID = 4;
+    string poster = 5;
+}
