@@ -5,8 +5,11 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/evrintobing17/StockbitTest/api/proto"
+	"github.com/evrintobing17/StockbitTest/internal/util/model"
 	"github.com/evrintobing17/StockbitTest/pkg/movie"
 	"github.com/go-kit/kit/endpoint"
+	"github.com/mitchellh/mapstructure"
 )
 
 type Set struct {
@@ -20,14 +23,18 @@ func NewEndpointSet(svc movie.Service) Set {
 }
 
 var (
-	OMDBAPIKEY = "faf7e5bb&s"
-	URL_FORMAT = "http://www.omdbapi.com/?apikey=%s&s=%s&page=%d"
+	key = "faf7e5bb&s"
+	url = "http://www.omdbapi.com/?apikey=%s&s=%s&page=%d"
 )
 
 func MakeSearchEndpoint(srv movie.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(SearchRequest)
-		url := fmt.Sprintf(URL_FORMAT, OMDBAPIKEY, req.MovieName, req.Page)
+		var req proto.SearchRequest
+		err := mapstructure.Decode(request, &req)
+		if err != nil {
+			return err, nil
+		}
+		url := fmt.Sprintf(url, key, req.MovieName, req.Page)
 		res, err := srv.Search(ctx, url, req)
 		if err != nil {
 			return SearchResponse{nil, err.Error()}, errors.New(err.Error())
@@ -36,7 +43,7 @@ func MakeSearchEndpoint(srv movie.Service) endpoint.Endpoint {
 	}
 }
 
-func (e Set) Search(ctx context.Context) ([]Movie, error) {
+func (e Set) Search(ctx context.Context) ([]model.Movie, error) {
 	req := SearchRequest{}
 	resp, err := e.SearchEndpoint(ctx, req)
 	if err != nil {

@@ -8,18 +8,20 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/evrintobing17/StockbitTest/api/proto"
+	"github.com/evrintobing17/StockbitTest/internal/util/model"
 	"github.com/go-kit/kit/log"
 )
 
 type movieService struct{}
 
-func NewService() Service {
+func NewMovieSearchService() Service {
 	return &movieService{}
 }
 
-func (m *MovieSearchService) Search(ctx context.Context, url string, req SearchRequest) ([]Movie, error) {
+func (m *movieService) Search(ctx context.Context, url string, req proto.SearchRequest) ([]model.Movie, error) {
 
-	var httpResp HTTPResponse
+	var httpResp model.HTTPResponse
 
 	response, err := http.Get(url)
 	if err != nil {

@@ -6,6 +6,7 @@ import (
 	"errors"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/evrintobing17/StockbitTest/pkg/movie/endpoint"
 	httptransport "github.com/go-kit/kit/transport/http"
@@ -30,14 +31,19 @@ func NewHTTPHandler(ep endpoint.Set) http.Handler {
 }
 
 func decodeHTTPSearchMovieRequest(_ context.Context, r *http.Request) (interface{}, error) {
-	var req endpoint.SearchRequest
-	if r.ContentLength == 0 {
-		logger.Log("Get request with no body")
-		return req, nil
+	title := r.URL.Query().Get("title")
+	if title == "" {
+		return nil, errors.New("title must be provided via QueryParams")
 	}
-	err := json.NewDecoder(r.Body).Decode(&req)
+
+	page, err := strconv.Atoi(r.URL.Query().Get("page"))
 	if err != nil {
-		return nil, err
+		page = 1
+	}
+
+	req := endpoint.SearchRequest{
+		MovieName: title,
+		Page:      page,
 	}
 	return req, nil
 }

@@ -14,7 +14,6 @@ message SearchRequest {
 
 message SearchResponse {
     repeated Movie movieList = 1;
-    string err = 2;
 }
 
 message Movie {

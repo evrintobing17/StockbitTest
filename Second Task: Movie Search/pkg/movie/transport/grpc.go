@@ -47,7 +47,6 @@ func decodeGRPCSearchMovieResponse(_ context.Context, r interface{}) (interface{
 
 	return &proto.SearchResponse{
 		MovieList: result,
-		Err:       resp.ErrorMessage,
 	}, nil
 }
 func (s *grpcServer) SearchMovie(ctx context.Context, r *proto.SearchRequest) (*proto.SearchResponse, error) {
